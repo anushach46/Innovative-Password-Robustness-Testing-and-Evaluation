@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innovative Password Robustness Testing and Evaluation</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Innovative Password Robustness Testing and Evaluation</h1>
+    <form id="passwordForm">
+      <label for="password">Enter Password:</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit">Test Password</button>
+    </form>
+    <div id="result"></div>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    document.getElementById('passwordForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const password = document.getElementById('password').value;
+      const response = await fetch('/test-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password })
+      });
+      const result = await response.json();
+      displayResult(result);
+    });
+
+    function displayResult(result) {
+      const messageElement = document.getElementById('message');
+      messageElement.innerHTML = '';
+      messageElement.classList.remove('error', 'success');
+
+      if (result.errors.length > 0) {
+        messageElement.classList.add('error');
+        result.errors.forEach(error => {
+          const errorElement = document.createElement('p');
+          errorElement.textContent = error;
+          messageElement.appendChild(errorElement);
+        });
+      } else {
+        messageElement.classList.add('success');
+        const successMessage = document.createElement('p');
+        successMessage.textContent = 'Password is strong!';
+        messageElement.appendChild(successMessage);
+      }
+    }
+  </script>
+</body>
+</html>
